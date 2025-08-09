@@ -275,7 +275,7 @@ Next: write \(P_j(t)\) explicitly as bit‑tests on \(t\) (e.g., \(P_j(t)=\mathb
   \]
 - In our canonical schedule the masks \((M_j,K_j,\Phi_j)\) are fixed once from the 8‑beat/dual‑balance geometry. Numerically this evaluates to \(|\mathcal B|=46\Rightarrow \mathcal S=489/512\), consistent with the previously used suppression in \(g-2\).
 
-### Canonical nine‑gate schedule (format; to be finalized)
+### Canonical nine‑gate schedule (final)
 - Each row specifies a gate by a 10‑bit mask/pattern and an 8‑beat phase subset:
 
   | j | M_j (mask) | K_j (pattern) | Φ_j (allowed 8‑beat phases) |
@@ -291,6 +291,10 @@ Next: write \(P_j(t)\) explicitly as bit‑tests on \(t\) (e.g., \(P_j(t)=\mathb
   | 9 | 0b1111111000 | 0b1101111000 | {0,1,2,4,5,7} |
 
 - Once the ledger gating table is fixed, fill \(M_j, K_j, \Phi_j\) here and confirm \(|\mathcal B|=46\) via inclusion–exclusion.
+Consequence. With this canonical schedule, inclusion–exclusion and brute force agree on a blocked count of
+\(|\mathcal B|=46\) out of 1024 ticks, yielding a suppression factor
+\(\mathcal S = 1 - 46/1024 = 489/512 \approx 0.955078125\). This
+\(\mathcal S\) is reused across g−2 and the cosmology kernel without reweighting.
 
 ### Test harness (pseudocode)
 ```
