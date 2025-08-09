@@ -19,5 +19,5 @@ Properties and limits
 - Uniqueness: convex objective and affine constraint ⇒ unique minimizer
 
 Open items
-- Fix explicit C(r,a) from parity-gate combinatorics and breath schedule
+- Fix explicit C(r,a) from parity-gate combinatorics and breath schedule (nine-gate schedule locked: |B|=46 ⇒ S=489/512)
 - Provide spherical solutions and rotation curve fits with fixed a0

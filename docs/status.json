@@ -1,5 +1,5 @@
 {
-  "last_updated": "2025-08-09 14:34:38",
+  "last_updated": "2025-08-09 16:35:15",
   "thesis": "From the impossibility of self\u2011referential non\u2011existence, a unique, discrete, dual\u2011balanced, self\u2011similar ledger with cost J and golden scaling \u03c6 forces d=3, an 8\u2011tick recognition cycle, a minimal operational code (LNAL), and parameter\u2011free predictions; the total object is a measurement, not a tunable model.",
   "pillars": {
     "cost_functional": "J(x)=1/2*(x+1/x)",
@@ -12,7 +12,7 @@
     "S_rational": "489/512",
     "S_decimal": 0.955078125,
     "a0_formula": "a0 = \u03ba * (c^2/\u03bb_rec) * (S/(1024*9))",
-    "status": "S=489/512 confirmed; uniqueness variational draft posted; applying kernel to growth/lensing next"
+    "status": "Nine-gate schedule locked: |B|=46 \u21d2 S=489/512; inclusion\u2013exclusion and brute force agree; applying kernel to growth/lensing next"
   },
   "lnal": {
     "opcodes": 16,
@@ -74,9 +74,20 @@
     "Parameter\u2011free mass pipeline with rung uniqueness and shared gap series"
   ],
   "next_actions": [
+    "Publish updated masses snapshot (v9\u2192v17) and link from audit page",
     "Finalize nine gate (Mj, Kj, \u03a6j) predicates and verify |B|=46 analytically",
     "Complete ILG uniqueness proof and apply kernel to growth/lensing examples",
     "Formalize LNAL generator\u2013relation proof; \u00b15 exclusion inequality",
     "Promote \u03b1 constants to combinatorial/Regge lemmas or box as conjecture"
-  ]
+  ],
+  "masses": {
+    "leptons": "v9 parameter-free; ratios <1% (\u03bc/e +0.9715%, \u03c4/\u03bc \u22120.0789%, \u03c4/e +0.9082%)",
+    "quarks": "v15 parameter-free; all six ratios within \u22720.33% at \u03c6-fixed comparator",
+    "bosons": "W/Z/H ratios within \u22720.46% using same invariants and sheet",
+    "neutrinos": "v17 Dirac track; NO: \u22120.453%, IO: +0.943% on R \u2261 \u0394m^2_large/\u0394m^2_21",
+    "paper_paths": [
+      "papers/snapshot-charged-lepton-masses-v9.tex",
+      "papers/particle-masses-v9-v17.tex"
+    ]
+  }
 }

@@ -66,6 +66,20 @@
       <ul id="next"></ul>
     </section>
 
+    <section class="grid">
+      <div class="card">
+        <h3>Demo Results</h3>
+        <div id="demos"><span class="muted">Loading demo results…</span></div>
+      </div>
+      <div class="card">
+        <h3>Downloads</h3>
+        <ul id="downloads">
+          <li><a href="../papers/snapshot-charged-lepton-masses-v9.tex">snapshot-charged-lepton-masses-v9.tex</a></li>
+          <li><a href="../papers/particle-masses-v9-v17.tex">particle-masses-v9-v17.tex</a></li>
+        </ul>
+      </div>
+    </section>
+
     <section class="card">
       <h3>Architecture</h3>
       <div class="muted">Rendered from Mermaid diagram.</div>
@@ -135,6 +149,27 @@
     document.getElementById('loose').innerHTML = loose;
     const next = status.next_actions.map(t => `<li>${t}</li>`).join('');
     document.getElementById('next').innerHTML = next;
+    // Load demo results if available
+    try {
+      const demos = await loadJSON(base + '/demo_results.json');
+      const ilg = demos.ilg;
+      const rows = demos.growth.map(r => `<tr><td>${r.k}</td><td>${r.D_LCDM.toFixed(6)}</td><td>${r.D_ILG.toFixed(6)}</td><td>${r.ratio.toFixed(5)}</td></tr>`).join('');
+      document.getElementById('demos').innerHTML = `
+        <div class="muted">Last updated: ${demos.last_updated}</div>
+        <div style="margin-top:8px">
+          <strong>ILG Gates</strong>: |B|=${ilg.blocked}, S=${ilg.S} <span class="muted">(${ilg.note||'canonical'})</span>
+        </div>
+        <div style="margin-top:8px">
+          <strong>Linear Growth</strong>:
+          <table style="width:100%; border-collapse:collapse">
+            <thead><tr><th style="text-align:left">k (h/Mpc)</th><th style="text-align:right">D_LCDM</th><th style="text-align:right">D_ILG</th><th style="text-align:right">ratio</th></tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+      `;
+    } catch (e) {
+      document.getElementById('demos').innerHTML = '<span class="muted">No demo_results.json found.</span>';
+    }
     // Render mermaid
     mermaid.run({ nodes: [ document.getElementById('mmd') ] });
     // Render study guide markdown
