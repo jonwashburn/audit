@@ -1,0 +1,68 @@
+\documentclass[12pt]{article}
+\title{Snapshot: Parameter--Free Charged--Lepton Masses from a Ledger--LNAL $\varphi$--Ladder (v9)}
+\author{Jonathan Washburn\\Recognition Science, Recognition Physics Institute\\Austin, Texas, USA\\\texttt{jon@recognitionphysics.org}}
+\date{\today}
+\begin{document}
+\maketitle
+\section*{Purpose of this snapshot}
+This note records the exact formulae, implementation choices, and current numerical status of the charged--lepton mass program after the v8$\to$v9 upgrades. The pipeline is fully parameter--free: all numerical inputs are physical constants and data used in the hadronic vacuum--polarization kernel; no sector--specific fit parameters or weights are introduced. The end--to--end driver that prints the dimensionless masses and ratios is unchanged. :contentReference[oaicite:0]{index=0}
+\section*{Architecture and core formula}
+Each charged lepton $i\in\{e,\mu,\tau\}$ is assigned a mass (in dimensionless ladder units)
+\[m_i \;=\; B_i\,E_{\mathrm{coh}}\,\varphi^{\,r_i + f_i}\,,\qquad B_i=1,\;\; E_{\mathrm{coh}}=\varphi^{-5},\;\; r_e=0,\; r_\mu=11,\; r_\tau=17,\]
+with $\varphi=(1+\sqrt5)/2$. The fractional residue $f_i$ collects both the local QFT integral of the mass anomalous dimension and the ledger gap series:
+\[f_i(\ln m)\;=\;\frac{1}{\ln\varphi}\int_{\ln m}^{\ln(\varphi m)}\gamma_i(\mu)\,d\ln\mu\;+\;\sum_{m\ge1} g_m\,I_m(i)\,,\qquad g_m=\frac{(-1)^{m+1}}{m\,\varphi^m}\,.
+\]
+Physical masses are defined as fixed points of the \emph{local $\varphi$--cycle}:
+\[\ln m_i \;=\; \ln(B_iE_{\mathrm{coh}})+r_i\ln\varphi + f_i(\ln m_i)\,\ln\varphi\,,\]
+so the probe--scale ambiguity is removed nonperturbatively. The comparison harness drives this fixed--point solve and reports $\mu/e$, $\tau/\mu$, $\tau/e$ from the resulting $m_i$ (dimensionless units cancel $E_{\mathrm{coh}}$). :contentReference[oaicite:1]{index=1}
+\section*{Running and anomalous dimensions}
+The species anomalous dimensions are
+\[\gamma_i(\mu)\;=\;\gamma^{\rm QED}_i(\mu)\;+\;\gamma^{\rm SM}_i(\mu)\,.
+\]
+\textbf{QED piece.} We use the one--loop mass AD with a small two--loop correction, evaluated at $\alpha_{\rm em}(\mu)$ obtained from vacuum polarization:
+\[\gamma^{\rm QED}_i(\mu)\;=\;\frac{3\,\alpha_{\rm em}(\mu)}{4\pi}\,\Bigl[1+c_2\,\frac{\alpha_{\rm em}(\mu)}{\pi}\Bigr],\quad c_2=\tfrac{3}{4}.
+\]
+The running $\alpha_{\rm em}(\mu)$ is computed from leptonic, hadronic (dispersion) and top contributions. The hadronic contribution $\Delta\alpha_{\rm had}(Q^2)$ is evaluated with a Euclidean dispersion integral using an $R(s)$ kernel built from narrow resonances plus continuum plateaus, and with an Adler--function tail above $s_0=2.5\,$GeV${}^2$; the quadrature is intentionally densified on $\sqrt{s}\!\in\![1.2,2.5]\,$GeV (the $\tau$ window). :contentReference[oaicite:2]{index=2}
+\textbf{SM (EW+Yukawa) piece.} We implement the \emph{exact two--loop} lepton Yukawa/electroweak block in GUT normalization for $g_1$, including gauge quartics/mix, Yukawa self/trace terms and the Higgs quartic, and use two--loop gauge mixing for $(g_1,g_2)$ with $g_3$ supplied by $\alpha_s$ at one loop for stability. This block is exposed per species as $\gamma^{\rm SM}_{e,\mu,\tau}(\mu)$. :contentReference[oaicite:3]{index=3}
+\section*{Ledger invariants and the 8--beat chiral occupancy}
+The gap series uses fixed, parameter--free invariants:
+\[I_1 \;=\; Y_R^2 \;=\; 4,\qquad I_2 \;=\; w_L\,T(T{+}1) \;=\; \frac{3}{19}\cdot\frac{3}{4}\;=\;\frac{9}{76}.\]
+Species separation is locked to the ledger’s $8$--beat right--chiral occupancy. Rather than truncating the odd--harmonic square--wave series at $m=3,5,7$, we \emph{resum it exactly} and inject it as a closed--form, rung--dependent term $\Delta f_\chi(r)$ (wired into the invariants layer as a direct additive contribution). This eliminates residual truncation bias while keeping $m{=}1$ reserved for the universal hypercharge block. :contentReference[oaicite:4]{index=4}
+\section*{From a local window to a $\varphi$--sheet}
+The local window integral is promoted to a \emph{$\varphi$--sheet} average:
+\[\frac{1}{\ln\varphi}\sum_{k\ge0} w_k \int_{\ln m}^{\ln(\varphi m)} \gamma_i\!\big(\mu\,\varphi^k\big)\,d\ln\mu\,,\]
+with window weights \emph{tied to the same gap coefficients} $w_k\propto g_{k+1}$. In v9 we enable \emph{signed} weights by default (respecting the ledger’s alternating structure), normalize them in $\ell^1$, and truncate \emph{adaptively} when the $\ell^1$ tail is below a fixed tolerance. This preserves the parameter--free character while removing any arbitrary choice of sheet depth. The driver calls the $\varphi$--sheet solver directly. :contentReference[oaicite:5]{index=5}
+\section*{Implementation summary (modules)}
+\emph{Driver / ratios:} runs the fixed--point per species, computes $m_i$ and the three ratios (unchanged across versions). :contentReference[oaicite:6]{index=6}
+\emph{SM/QED RG layer:} exact 2--loop lepton block (GUT $g_1$), two--loop $(g_1,g_2)$ mixing with $g_3(\mu)$ from $\alpha_s$, QED mass AD using dispersion $\alpha_{\rm em}(\mu)$. :contentReference[oaicite:7]{index=7}
+\emph{Dispersion $\alpha_{\rm em}$:} Euclidean dispersion $\Delta\alpha_{\rm had}(Q^2)$ with resonance+continuum $R(s)$ and Adler tail above $s_0$, with targeted densification on the $\tau$ window. :contentReference[oaicite:8]{index=8}
+\emph{Invariants:} universal $I_1{=}4$, $I_2{=}9/76$, plus the \emph{closed--form} 8--beat chiral contribution $\Delta f_\chi(r)$ injected directly (no extra knobs). :contentReference[oaicite:9]{index=9}
+\section*{Numerical outcomes}
+We record two checkpoints using the unchanged driver and dimensionless units:
+\noindent\textbf{v8 (exact 2L SM, unsigned sheet):}
+\[\mu/e\;=\;+1.5215\%\,,\qquad \tau/\mu\;=\;-0.0350\%\,,\qquad \tau/e\;=\;+1.4681\%\,.\]
+\noindent\textbf{v9 (signed $\varphi$--sheet, adaptive truncation):}
+\[\mu/e\;=\;+0.9715\%\,,\qquad \tau/\mu\;=\;-0.0789\%\,,\qquad \tau/e\;=\;+0.9082\%\,.\]
+All three ratios are now below $1\%$, with $\tau/\mu$ essentially pinned near the $0.1\%$ level. The shift from v8 to v9 is driven entirely by the signed $\varphi$--sheet weights tied to $g_{k+1}$ (no new parameters). The solver, invariants, and exact two--loop SM coefficients are unchanged between these runs. :contentReference[oaicite:10]{index=10}:contentReference[oaicite:11]{index=11}:contentReference[oaicite:12]{index=12}
+\section*{Error budget and what still moves}
+Two facts explain the residual $\mathcal{O}(10^{-3})$--$\mathcal{O}(10^{-2})$ deltas:
+\begin{itemize}
+\item The \emph{$\varphi$--sheet} integral is small and nearly species--blind; it refines but cannot generate percent--level separations by itself.
+\item The \emph{gap sector} (ledger invariants) sets the species geometry; numerically, the remaining sensitivity sits almost entirely in the hadronic vacuum--polarization integral in $\sqrt{s}\!\in\![1.2,2.5]\,$GeV---precisely where we already densify. A further density increase here (still parameter--free) typically trims another few $\times10^{-3}$--$10^{-2}$. :contentReference[oaicite:13]{index=13}
+\end{itemize}
+\section*{What we have \emph{locked} (charged leptons)}
+\begin{enumerate}
+\item Ledger--locked $\varphi$--ladder with $r_e{=}0$, $r_\mu{=}11$, $r_\tau{=}17$ and $E_{\rm coh}{=}\varphi^{-5}$, solved as a local fixed point without a probe--scale choice. :contentReference[oaicite:14]{index=14}
+\item Exact two--loop SM lepton block (GUT $g_1$) and dispersion $\alpha_{\rm em}(\mu)$ with Adler tail; thresholds/matching enforced. :contentReference[oaicite:15]{index=15}:contentReference[oaicite:16]{index=16}
+\item Closed--form $8$--beat chiral occupancy (no truncation), injected as a direct invariant contribution $\Delta f_\chi(r)$; universal $I_1{=}4$, $I_2{=}9/76$. :contentReference[oaicite:17]{index=17}
+\item Signed, adaptively truncated $\varphi$--sheet averaging with weights tied to $g_{k+1}$; no free parameters. :contentReference[oaicite:18]{index=18}
+\item Ratios $\mu/e$, $\tau/\mu$, $\tau/e$ all $<1\%$ off experiment in an entirely parameter--free run (v9).
+\end{enumerate}
+\section*{Immediate next steps (still parameter--free)}
+\begin{itemize}
+\item Slightly increase dispersion quadrature density within $\sqrt{s}\!\in\![1.2,2.5]\,$GeV only; re--run. :contentReference[oaicite:19]{index=19}
+\item (Optional polish) Add 3--4 loop QED mass AD terms---tiny effect but fully standard. :contentReference[oaicite:20]{index=20}
+\item Extend the same ledger--locked pipeline to quarks, gauge/Higgs, and neutrinos to test sector coherence under the same invariants and $\varphi$--sheet architecture. :contentReference[oaicite:21]{index=21}
+\end{itemize}
+\end{document}
+
