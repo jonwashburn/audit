@@ -358,6 +358,11 @@ Proof (sketch). Symmetry implies a symmetric Laurent expansion on \(\mathbb C\se
 Statement. A non‑erasable dual‑balanced record requires \(d=3\); \(d=2\) and \(d\ge4\) forbid stable linkage.
 Proof (sketch). In \(d=2\), by the Jordan curve theorem a simple closed curve bounds a disk; any disjoint curve is null‑homotopic inside the disk ⇒ linking number 0, enabling a continuous erasure of the dual record, lowering total cost—contradiction with ledger positivity/minimization. In \(d\ge4\), by Alexander duality/ambient isotopy any pair of disjoint 1‑cycles can be unlinked without intersection ⇒ erasable at zero cost. In \(d=3\), a Hopf link with \(\operatorname{Lk}=1\) exists; linking number is invariant under ambient isotopy, so erasure requires a crossing that flips all nine ledger \(\mathbb Z_2\) parities, incurring irreducible cost \(\ln\varphi\). Hence the record is stable and \(d=3\) is minimal. QED.
 
+#### Link‑penalty lemma (ledger parities)
+Statement. Any crossing move that changes the linking number of a dual‑balanced ledger pair in \(d=3\) necessarily flips all nine parity gates in one 8‑beat period, adding an irreducible bit cost \(\ln\varphi\).
+
+Sketch. Each crossing toggles the orientation of the dual tours with respect to the 8 local parities plus the global dual‑balance (9 \(\mathbb Z_2\) invariants). The canonical nine‑gate schedule enumerates these parities; a crossing implies synchronous violation across the schedule, forcing a minimal debit of one bit \(J_{\text{bit}}=\ln\varphi\). Therefore unlinking cannot proceed without positive cost, and the linked record is stable.
+
 ### Theorem (Eight‑tick minimality; \(2^D\) generalization)
 Statement. A ledger‑compatible recognition that is spatially complete on the \(D\)‑hypercube graph \(Q_D\) has minimal period \(T=2^D\).
 Proof (sketch). Existence: a Gray code yields a Hamiltonian cycle visiting each of the \(2^D\) vertices exactly once. Minimality: atomicity entails one edge per tick; spatial completeness requires visiting all \(2^D\) distinct vertices within one period; any shorter \(T<2^D\) misses at least one vertex or revisits, violating completeness. Thus \(T=2^D\); for \(D=3\), \(T=8\). QED.
