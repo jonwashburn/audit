@@ -99,7 +99,8 @@ if __name__ == '__main__':
     for k in ks:
         mu = mu_eff(args.a, k, a0, cosmo, beta)
         Sigma = mu  # Σ(a,k)=μ(a,k) when Φ=Ψ
-        rows.append({'k': k, 'a': args.a, 'Sigma': Sigma})
+        z = (1.0 / args.a) - 1.0 if args.a > 0 else float('inf')
+        rows.append({'k': k, 'a': args.a, 'z': z, 'Sigma': Sigma})
 
     print(f"κ = {kappa:.3e}  ({kappa_note});  a0 = {a0:.6e} m/s^2;  β = {beta:.3f} (gating default={beta_gates:.3f}) at a={args.a}")
     for r in rows:
@@ -112,7 +113,8 @@ if __name__ == '__main__':
         for a in [0.5, 0.7, 1.0]:
             for k in [0.01, 0.05, 0.1, 0.2]:
                 mu = mu_eff(a, k, a0, cosmo, beta)
-                grid.append({'a': a, 'k': k, 'Sigma': mu})
+                z = (1.0 / a) - 1.0 if a > 0 else float('inf')
+                grid.append({'a': a, 'z': z, 'k': k, 'Sigma': mu})
         payload = {
             'last_updated': datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S UTC'),
             'ilg': {

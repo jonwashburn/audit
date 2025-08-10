@@ -157,7 +157,8 @@ if __name__ == '__main__':
                 D_std = integrate_growth(a_start=1e-3, a_end=a, k_hmpc=k, a0=0.0, N=args.steps, beta=beta)
                 D_ilg = integrate_growth(a_start=1e-3, a_end=a, k_hmpc=k, a0=a0, N=args.steps, beta=beta)
                 ratio = (D_ilg / D_std) if D_std != 0 else float('nan')
-                grid.append({'a': a, 'k': k, 'ratio': ratio})
+                z = (1.0 / a) - 1.0 if a > 0 else float('inf')
+                grid.append({'a': a, 'z': z, 'k': k, 'ratio': ratio})
         payload = {
             'last_updated': datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S UTC'),
             'ilg': {

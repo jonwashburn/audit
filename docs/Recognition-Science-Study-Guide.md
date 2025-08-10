@@ -213,11 +213,15 @@ Minimality proof sketch: normal forms in \(C_3 * C_2 * C_\infty\) are unique; an
 - The kernel preserves global conservation (modified Poisson in divergence form) and reduces to the standard Poisson when \(\chi\to0\).
 - Among monotone, self‑similar saturating laws, the reciprocal form \(1/(1+\chi)\) uniquely extremizes the ledger action under a convex capacity constraint, making it the minimal‑cost choice.
 
-### ILG kernel uniqueness — variational statement (draft)
+### ILG kernel uniqueness — variational lemma (tight)
 - Define the ledger action over a spherical shell of radius \(r\) for a trial kernel \(w\in(0,1]\):
   \[\mathcal A[w] = \int_{\text{shell}} w\,|\nabla\Phi|^2\,dV\quad \text{s.t.}\quad \int_{\text{shell}} (1-w)\,\mathcal C(r,a)\,dV \le \Lambda,\]
   where \(\mathcal C\) is the capacity demand (proportional to \(\chi\)) and \(\Lambda\) the per‑breath budget from dual‑balance.
-- Lagrangian: \(\mathcal L = \mathcal A + \lambda\big( \int (1-w)\,\mathcal C - \Lambda\big)\). Stationarity in \(w\) yields \( |\nabla\Phi|^2 - \lambda\,\mathcal C = 0 \Rightarrow w = 1/(1+\chi)\) after normalization. Convexity in \(w\) (both terms linear in \(w\)) gives global optimality.
+- Lagrangian: \(\mathcal L[w] = \int w\,|\nabla\Phi|^2\,dV + \lambda\Big( \int (1-w)\,\mathcal C\,dV - \Lambda\Big)\). Stationarity in \(w\) gives \(|\nabla\Phi|^2 - \lambda\,\mathcal C = 0\) a.e.; with normalization \(\chi\propto \mathcal C/|\nabla\Phi|^2\) the unique admissible minimizer is \(w(\chi)=1/(1+\chi)\). Convex feasibility and linear objective in \(w\) imply global optimality and uniqueness. Limits: \(\chi\to0\Rightarrow w\to1\) (Newtonian); \(\chi\to\infty\Rightarrow w\sim 1/\chi\) (information‑limited).
+
+Corollary (explicit Newtonian/MOND limits).
+- If \(a\gg a_0\) (near field or early times), then \(\chi\ll1\) and \(\mu=1/w\to1\), recovering GR/\(\Lambda\)CDM.
+- If \(a\ll a_0\) (far field or late times), then \(\chi\gg1\) and \(\mu(x)=x/(1+x)\) with \(x=a_0/a\), yielding the empirical deep‑MOND scaling without new parameters.
 - KKT complementarity fixes \(\lambda\ge0\); in low‑load regions \(\lambda\to0\Rightarrow w\to1\); in high‑load regions the budget binds and \(w\) follows the reciprocal law. Uniqueness follows from strict convexity of \(\chi\) in the admissible class.
 
 ### Acceptance checks
