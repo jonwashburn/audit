@@ -150,6 +150,14 @@ if __name__ == '__main__':
 
     if args.write_json:
         os.makedirs(os.path.dirname(os.path.abspath(args.write_json)), exist_ok=True)
+        # Also compute a small grid over (a,k) for ILG/LCDM growth ratio
+        grid = []
+        for a in [0.5, 0.7, 1.0]:
+            for k in [0.01, 0.05, 0.1, 0.2]:
+                D_std = integrate_growth(a_start=1e-3, a_end=a, k_hmpc=k, a0=0.0, N=args.steps, beta=beta)
+                D_ilg = integrate_growth(a_start=1e-3, a_end=a, k_hmpc=k, a0=a0, N=args.steps, beta=beta)
+                ratio = (D_ilg / D_std) if D_std != 0 else float('nan')
+                grid.append({'a': a, 'k': k, 'ratio': ratio})
         payload = {
             'last_updated': datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S UTC'),
             'ilg': {
@@ -158,7 +166,8 @@ if __name__ == '__main__':
                 'beta': beta,
                 'note': 'canonical schedule; κ note: ' + kappa_note,
             },
-            'growth': results
+            'growth': results,
+            'grid': grid
         }
         with open(args.write_json, 'w') as f:
             json.dump(payload, f, indent=2)

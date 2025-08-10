@@ -107,6 +107,12 @@ if __name__ == '__main__':
 
     if args.write_json:
         os.makedirs(os.path.dirname(os.path.abspath(args.write_json)), exist_ok=True)
+        # Also build a small grid over a and k to illustrate scale dependence
+        grid = []
+        for a in [0.5, 0.7, 1.0]:
+            for k in [0.01, 0.05, 0.1, 0.2]:
+                mu = mu_eff(a, k, a0, cosmo, beta)
+                grid.append({'a': a, 'k': k, 'Sigma': mu})
         payload = {
             'last_updated': datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S UTC'),
             'ilg': {
@@ -115,7 +121,8 @@ if __name__ == '__main__':
                 'beta': beta,
                 'note': 'canonical schedule; κ note: ' + kappa_note,
             },
-            'lensing': rows
+            'lensing': rows,
+            'grid': grid
         }
         with open(args.write_json, 'w') as f:
             json.dump(payload, f, indent=2)
