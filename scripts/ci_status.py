@@ -70,6 +70,28 @@ except Exception as e:
     status['cons_2d_var'] = run_conservation('conservation_check_varying_w.py', 'conservation_check_varying.json')
     # Conservation 3D
     status['cons_3d'] = run_conservation('conservation_check_3d.py', 'conservation_check_3d.json')
+    # Uncertainties presence check
+    try:
+        unc_path = DOCS / 'masses_uncertainties.json'
+        present = unc_path.exists()
+        nonzero = False
+        keys_ok = False
+        if present:
+            with open(unc_path, 'r') as f:
+                unc = json.load(f)
+            keys_ok = all(k in unc for k in ['ckm', 'pmns', 'neutrinos'])
+            def has_nonzero(x):
+                if isinstance(x, dict):
+                    return any(has_nonzero(v) for v in x.values())
+                if isinstance(x, list):
+                    return any(has_nonzero(v) for v in x)
+                if isinstance(x, (int, float)):
+                    return x != 0
+                return False
+            nonzero = has_nonzero(unc)
+        status['uncertainties'] = {'present': present, 'keys_ok': keys_ok, 'nonzero': nonzero}
+    except Exception as e:
+        status['uncertainties'] = {'present': False, 'keys_ok': False, 'nonzero': False, 'error': str(e)}
     # Summarize
     summary = all(v.get('passed', False) for k, v in status.items() if isinstance(v, dict) and 'passed' in v)
     status['summary'] = {'passed': summary}
