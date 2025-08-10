@@ -456,6 +456,18 @@ Acceptance checklist.
   - Artifact: [docs/lensing_results.json](https://raw.githubusercontent.com/jonwashburn/audit/main/docs/lensing_results.json)
 - Both demos use: \(\mathcal S=489/512\), \(T=1024\), \(N_{\text{gates}}=9\), \(\beta_{\text{gates}}=(T\,N_{\text{gates}})/\mathcal S\), and the same \(\mu\) in growth and lensing.
 
+### Discrete face‑flux stencil: consistency and convergence (sketch)
+
+- Conservative form. On a voxel grid with spacing \(h\), define face fluxes
+  \(F_x = w\,\partial_x \Phi\), etc., at face centers. The discrete divergence at a cell is the net outward flux divided by \(h\):
+  \[ \operatorname{div}_h( w\nabla\Phi )\;=\;\frac{F_x\big|_{i+1/2}-F_x\big|_{i-1/2} + F_y\big|_{j+1/2}-F_y\big|_{j-1/2} + F_z\big|_{k+1/2}-F_z\big|_{k-1/2}}{h}. \]
+  Summing over cells telescopes to boundary flux (discrete divergence theorem), guaranteeing exact conservation at the discrete level.
+
+- Consistency. With smooth \(w,\Phi\), second‑order centered differences satisfy
+  \(\partial_x\Phi = (\Phi_{i+1}-\Phi_{i})/h + \mathcal O(h)\) at faces and \(w\) face values as arithmetic averages yield \(w = (w_{i+1}+w_i)/2 + \mathcal O(h^2)\). A Taylor expansion shows \(\operatorname{div}_h( w\nabla\Phi ) = \nabla\!\cdot( w\nabla\Phi ) + \mathcal O(h^2)\) on interior cells.
+
+- Convergence. Lax equivalence (stability + consistency) plus the conservative structure implies the discrete solution converges to the continuous solution as \(h\to0\). Our toy checks confirm exactness on polynomials (e.g., \(\Phi=x^2+y^2+z^2\) for constant \(w\)) and machine‑precision agreement of interior‑sum and boundary‑flux for smooth varying \(w\).
+
 ## Cubic‑tiling minimality (AIT skeleton)
 - **Domain**: homogeneous, isotropic, discrete 3D manifolds tiling space by congruent voxels; unit‑cell connectivity must be finitely describable.
 - **Cost**: configuration description length \(K(\mathcal M)\) (Kolmogorov/algorithmic cost) measured per unit volume.

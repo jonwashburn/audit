@@ -1,0 +1,30 @@
+{
+  "last_updated": "2025-08-10 03:16:38 UTC",
+  "gates": {
+    "passed": true,
+    "stdout": "|B| (brute)   = 46\nS   (brute)   = 1 - 46/1024 -> 0.955078125\n|B| (analytic)= 46\nS   (analytic)= 1 - 46/1024 -> 0.955078125"
+  },
+  "growth_json": {
+    "passed": true,
+    "path": "/Volumes/T9/Cursor-Active/Aug8-papers/audit/docs/demo_results.json"
+  },
+  "lensing_json": {
+    "passed": true,
+    "path": "/Volumes/T9/Cursor-Active/Aug8-papers/audit/docs/lensing_results.json"
+  },
+  "cons_2d_const": {
+    "passed": true,
+    "stdout": "Wrote docs/conservation_check.json: passed=True, max_abs_err=0.000e+00"
+  },
+  "cons_2d_var": {
+    "passed": true,
+    "stdout": "Wrote docs/conservation_check_varying.json: passed=True, |sum-div - flux|=2.728e-12"
+  },
+  "cons_3d": {
+    "passed": true,
+    "stdout": "Wrote docs/conservation_check_3d.json: Laplacian OK=True, Varying-w OK=True"
+  },
+  "summary": {
+    "passed": true
+  }
+}
