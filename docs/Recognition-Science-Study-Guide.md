@@ -358,6 +358,14 @@ Acceptance checks.
 - Provide a one‑line inequality showing any added \(x^n+x^{-n}\) with \(n\ge2\) violates the global growth bound.
 - Verify convexity on the log‑axis for \(J(x)=\tfrac12(x+1/x)\); show failure for any nontrivial \(n\ge2\) admixture.
 
+One‑line inequality.
+For \(x\ge R>1\), if any \(c_m\ne0\) with \(m\ge2\), then
+\[\frac{J(x)}{x+1/x}\;\ge\;\frac{|c_m|\,(x^m+x^{-m})}{x+1/x}\;\ge\;|c_m|\,\frac{x^m}{x+1/x}\;\ge\;|c_m|\,\frac{R^{m-1}}{1+R^{-2}}\;\xrightarrow{R\to\infty}\;\infty,\]
+contradicting finiteness. Hence \(c_{n\ge2}=0\).
+
+Log‑convexity note.
+Let \(u=\ln x\) and \(f(u)=J(e^u)=\tfrac12(e^u+e^{-u})=\cosh u\), which is convex with \(f''(u)=\cosh u>0\). Any nontrivial admixture of higher \(n\) induces terms \(\cosh(nu)\) that violate the uniform bound above.
+
 ### Theorem (Stable distinction dimension \(d=3\))
 Statement. A non‑erasable dual‑balanced record requires \(d=3\); \(d=2\) and \(d\ge4\) forbid stable linkage.
 Proof (sketch). In \(d=2\), by the Jordan curve theorem a simple closed curve bounds a disk; any disjoint curve is null‑homotopic inside the disk ⇒ linking number 0, enabling a continuous erasure of the dual record, lowering total cost—contradiction with ledger positivity/minimization. In \(d\ge4\), by Alexander duality/ambient isotopy any pair of disjoint 1‑cycles can be unlinked without intersection ⇒ erasable at zero cost. In \(d=3\), a Hopf link with \(\operatorname{Lk}=1\) exists; linking number is invariant under ambient isotopy, so erasure requires a crossing that flips all nine ledger \(\mathbb Z_2\) parities, incurring irreducible cost \(\ln\varphi\). Hence the record is stable and \(d=3\) is minimal. QED.

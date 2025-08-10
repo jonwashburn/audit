@@ -74,7 +74,7 @@ if __name__ == '__main__':
     parser.add_argument('--a0-target', type=float, default=1.2e-10, help='Target a0 used to infer κ when --kappa is not provided.')
     parser.add_argument('--ks', type=str, default='0.01,0.1,0.2', help='Comma-separated k values in h/Mpc')
     parser.add_argument('--a', type=float, default=1.0, help='Scale factor at which to report Σ (default today).')
-    parser.add_argument('--beta', type=float, default=1.0, help='Scale proxy factor in a_char (order unity).')
+    parser.add_argument('--beta', type=float, default=None, help='Override scale proxy β in a_char. If omitted, uses gating-derived β_gates=(T*N_gates)/S.')
     parser.add_argument('--write-json', type=str, default=None, help='If set, write demo JSON to this path (e.g., ../docs/lensing_results.json).')
     args = parser.parse_args()
 
@@ -86,16 +86,22 @@ if __name__ == '__main__':
         kappa_note = 'user κ'
 
     a0 = compute_a0_from_kappa(kappa)
+    # gating-derived beta: β_gates = (T * N_gates) / S
+    S = 489.0/512.0
+    T = 1024.0
+    N_gates = 9.0
+    beta_gates = (T * N_gates) / S
+    beta = args.beta if args.beta is not None else beta_gates
 
     cosmo = Cosmo()
     ks = [float(s) for s in args.ks.split(',') if s]
     rows = []
     for k in ks:
-        mu = mu_eff(args.a, k, a0, cosmo)
+        mu = mu_eff(args.a, k, a0, cosmo, beta)
         Sigma = mu  # Σ(a,k)=μ(a,k) when Φ=Ψ
         rows.append({'k': k, 'a': args.a, 'Sigma': Sigma})
 
-    print(f"κ = {kappa:.3e}  ({kappa_note});  a0 = {a0:.6e} m/s^2  at a={args.a}")
+    print(f"κ = {kappa:.3e}  ({kappa_note});  a0 = {a0:.6e} m/s^2;  β = {beta:.3f} (gating default={beta_gates:.3f}) at a={args.a}")
     for r in rows:
         print(f"k={r['k']:5.2f}  Sigma={r['Sigma']:.6f}")
 
@@ -106,6 +112,7 @@ if __name__ == '__main__':
             'ilg': {
                 'blocked': 46,
                 'S': 489/512,
+                'beta': beta,
                 'note': 'canonical schedule; κ note: ' + kappa_note,
             },
             'lensing': rows

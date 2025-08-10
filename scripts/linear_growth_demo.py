@@ -39,18 +39,18 @@ def mu_eff(a, k_hmpc, a0, cosmo: Cosmo, beta=1.0):
     # capped enhancement: μ = 1 + x/(1+x) ∈ (1,2)
     return 1.0 + x / (1.0 + x)
 
-def growth_rhs(ln_a, y, k_hmpc, a0, cosmo: Cosmo):
+def growth_rhs(ln_a, y, k_hmpc, a0, cosmo: Cosmo, beta: float):
     a = math.exp(ln_a)
     D, G = y
     dlnH_dlnA = -1.5 * cosmo.Omega_m0 / (cosmo.Omega_m0 + cosmo.Omega_L0 * a**3)
     coeff = 2.0 + dlnH_dlnA
-    mu = mu_eff(a, k_hmpc, a0, cosmo)
+    mu = mu_eff(a, k_hmpc, a0, cosmo, beta)
     Om_a = cosmo.Omega_m0 / (cosmo.Omega_m0 + cosmo.Omega_L0 * a**3)
     Dp = G
     Gp = -coeff * G + 1.5 * Om_a * mu * D
     return (Dp, Gp)
 
-def integrate_growth(a_start=1e-3, a_end=1.0, k_hmpc=0.1, a0=1.2e-10, N=400):
+def integrate_growth(a_start=1e-3, a_end=1.0, k_hmpc=0.1, a0=1.2e-10, N=400, beta: float = 1.0):
     cosmo = Cosmo()
     ln_a0 = math.log(a_start)
     ln_a1 = math.log(a_end)
@@ -59,10 +59,10 @@ def integrate_growth(a_start=1e-3, a_end=1.0, k_hmpc=0.1, a0=1.2e-10, N=400):
     G = D
     ln_a = ln_a0
     for _ in range(N):
-        k1 = growth_rhs(ln_a, (D,G), k_hmpc, a0, cosmo)
-        k2 = growth_rhs(ln_a + 0.5*h, (D+0.5*h*k1[0], G+0.5*h*k1[1]), k_hmpc, a0, cosmo)
-        k3 = growth_rhs(ln_a + 0.5*h, (D+0.5*h*k2[0], G+0.5*h*k2[1]), k_hmpc, a0, cosmo)
-        k4 = growth_rhs(ln_a + h, (D+h*k3[0], G+h*k3[1]), k_hmpc, a0, cosmo)
+        k1 = growth_rhs(ln_a, (D,G), k_hmpc, a0, cosmo, beta)
+        k2 = growth_rhs(ln_a + 0.5*h, (D+0.5*h*k1[0], G+0.5*h*k1[1]), k_hmpc, a0, cosmo, beta)
+        k3 = growth_rhs(ln_a + 0.5*h, (D+0.5*h*k2[0], G+0.5*h*k2[1]), k_hmpc, a0, cosmo, beta)
+        k4 = growth_rhs(ln_a + h, (D+h*k3[0], G+h*k3[1]), k_hmpc, a0, cosmo, beta)
         D += (h/6.0) * (k1[0] + 2*k2[0] + 2*k3[0] + k4[0])
         G += (h/6.0) * (k1[1] + 2*k2[1] + 2*k3[1] + k4[1])
         ln_a += h
@@ -106,7 +106,7 @@ if __name__ == '__main__':
     parser.add_argument('--a-start', type=float, default=1e-3)
     parser.add_argument('--a-end', type=float, default=1.0)
     parser.add_argument('--steps', type=int, default=400)
-    parser.add_argument('--beta', type=float, default=1.0, help='Scale proxy factor in a_char (order unity).')
+    parser.add_argument('--beta', type=float, default=None, help='Override scale proxy factor in a_char. If omitted, uses gating-derived β_gates=(T*N_gates)/S.')
     parser.add_argument('--write-json', type=str, default=None, help='If set, write demo JSON to this path (e.g., ../docs/demo_results.json).')
     parser.add_argument('--normalise', action='store_true', help='Report growth normalised to LCDM at a_end (ratios ~1).')
     args = parser.parse_args()
@@ -119,12 +119,18 @@ if __name__ == '__main__':
         kappa_note = 'user κ'
 
     a0 = compute_a0_from_kappa(kappa)
+    # gating-derived beta: β_gates = (T * N_gates) / S
+    S = 489.0/512.0
+    T = 1024.0
+    N_gates = 9.0
+    beta_gates = (T * N_gates) / S
+    beta = args.beta if args.beta is not None else beta_gates
 
     ks = [float(s) for s in args.ks.split(',') if s]
     results = []
     for k in ks:
-        D_std = integrate_growth(a_start=args.a_start, a_end=args.a_end, k_hmpc=k, a0=0.0, N=args.steps)
-        D_ilg = integrate_growth(a_start=args.a_start, a_end=args.a_end, k_hmpc=k, a0=a0, N=args.steps)
+        D_std = integrate_growth(a_start=args.a_start, a_end=args.a_end, k_hmpc=k, a0=0.0, N=args.steps, beta=beta)
+        D_ilg = integrate_growth(a_start=args.a_start, a_end=args.a_end, k_hmpc=k, a0=a0, N=args.steps, beta=beta)
         if args.normalise and D_std != 0.0:
             Dn_std = 1.0
             Dn_ilg = D_ilg / D_std
@@ -138,7 +144,7 @@ if __name__ == '__main__':
             'ratio': (Dn_ilg / Dn_std) if Dn_std != 0 else float('nan')
         })
 
-    print(f"κ = {kappa:.3e}  ({kappa_note});  a0 = {a0:.6e} m/s^2")
+    print(f"κ = {kappa:.3e}  ({kappa_note});  a0 = {a0:.6e} m/s^2;  β = {beta:.3f} (gating default={beta_gates:.3f})")
     for r in results:
         print(f"k={r['k']:5.2f}  D_LCDM={r['D_LCDM']:.6f}  D_ILG={r['D_ILG']:.6f}  ratio={r['ratio']:.5f}")
 
@@ -149,6 +155,7 @@ if __name__ == '__main__':
             'ilg': {
                 'blocked': 46,
                 'S': 489/512,
+                'beta': beta,
                 'note': 'canonical schedule; κ note: ' + kappa_note,
             },
             'growth': results
