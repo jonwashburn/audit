@@ -1,0 +1,17 @@
+{
+  "last_updated": "2025-08-10 03:11:23 UTC",
+  "conservation_check_3d": {
+    "constant_w_laplacian": {
+      "expected": 6.0,
+      "max_abs_err": 0.0,
+      "count_interior": 3375,
+      "passed": true
+    },
+    "varying_w_divergence": {
+      "sum_div_interior": 19446.77421525429,
+      "flux_out_boundary": 19446.774215254256,
+      "abs_residual": 3.2741809263825417e-11,
+      "passed": true
+    }
+  }
+}
