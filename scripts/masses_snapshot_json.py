@@ -89,6 +89,26 @@ def main():
         'notes': 'Parameter-free phi-sheet and ledger-locked rungs; no sector-specific knobs (AI snapshot v21).',
     }
 
+    # Optionally merge memorialized uncertainties if present.
+    # Provide a file docs/masses_uncertainties.json with the same nested shape
+    # to inject fields like uncertainties_pct, V_unc, theta12_unc_deg, etc.
+    unc_path = DOCS / 'masses_uncertainties.json'
+    if unc_path.exists():
+        try:
+            import json as _json
+            with open(unc_path, 'r') as f:
+                unc = _json.load(f)
+            def deep_update(base, extra):
+                for k, v in extra.items():
+                    if isinstance(v, dict) and isinstance(base.get(k), dict):
+                        deep_update(base[k], v)
+                    else:
+                        base[k] = v
+            deep_update(data, unc)
+        except Exception:
+            # If uncertainties cannot be parsed, proceed without them
+            pass
+
     DOCS.mkdir(parents=True, exist_ok=True)
     out_path = DOCS / 'masses_snapshot.json'
     with open(out_path, 'w') as f:
