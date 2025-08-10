@@ -70,6 +70,20 @@ except Exception as e:
     status['cons_2d_var'] = run_conservation('conservation_check_varying_w.py', 'conservation_check_varying.json')
     # Conservation 3D
     status['cons_3d'] = run_conservation('conservation_check_3d.py', 'conservation_check_3d.json')
+    # Ledger snapshot (non-failing): capture stdout to docs/ledger_snapshot_v22c.txt
+    try:
+        out_txt = DOCS / 'ledger_snapshot_v22c.txt'
+        p = subprocess.run([sys.executable, str(SCRIPTS / 'ledger_snapshot_v22c.py')], capture_output=True, text=True, timeout=120)
+        DOCS.mkdir(parents=True, exist_ok=True)
+        with open(out_txt, 'w') as f:
+            f.write(p.stdout)
+        status['ledger_snapshot'] = {
+            'present': True,
+            'path': str(out_txt),
+            'lines': p.stdout.count('\n') + (0 if not p.stdout else 1)
+        }
+    except Exception as e:
+        status['ledger_snapshot'] = {'present': False, 'error': str(e)}
     # Metrics presence and badges
     try:
         subprocess.run([sys.executable, str(SCRIPTS / 'metrics.py')], check=True)
