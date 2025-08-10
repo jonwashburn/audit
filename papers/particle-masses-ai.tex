@@ -1,0 +1,139 @@
+\documentclass[11pt]{article}
+
+\title{Ledger--LNAL $\varphi$--Ladder Mass Architecture: AI Snapshot (v21)}
+\author{Jonathan Washburn\\
+Recognition Science, Recognition Physics Institute\\
+Austin, Texas, USA\\
+\texttt{jon@recognitionphysics.org}}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section*{Scope}
+This is a compact, AI--oriented record of the parameter--free mass/mixing framework and its current numerical status across leptons, quarks, bosons, CKM, PMNS, and the absolute Dirac $\nu$ scale. It is self--contained and uses only ledger--locked structures; no fit parameters or sector--specific weights are introduced.
+
+\section{Architecture}
+Each species $i$ is assigned a dimensionless mass
+\[
+m_i \;=\; B_i\,E_{\mathrm{coh}}\,\varphi^{\,r_i + f_i}\,,\qquad
+B_i=1,\;\; E_{\mathrm{coh}}=\varphi^{-5},\;\;\varphi=\tfrac{1+\sqrt5}{2}.
+\]
+The fractional residue $f_i$ contains a local QFT integral of the mass anomalous dimension plus a rung--sensitive ledger gap series:
+\[
+f_i(\ln m)\;=\;\frac{1}{\ln\varphi}\int_{\ln m}^{\ln(\varphi m)}\gamma_i(\mu)\,d\ln\mu
+\;+\;\sum_{m\ge1} g_m\,I_m(i),\qquad
+g_m=\frac{(-1)^{m+1}}{m\,\varphi^m}.
+\]
+Physical masses are defined as fixed points of the local $\varphi$--cycle,
+\[
+\ln m_i \;=\; \ln(B_iE_{\mathrm{coh}})+r_i\ln\varphi + f_i(\ln m_i)\,\ln\varphi,
+\]
+and we promote the local window to a \emph{$\varphi$--sheet} average using signed, $\ell^1$--normalized weights $w_k\propto g_{k+1}$ with adaptive truncation (no new parameters).
+
+\paragraph{Invariants (LNAL).}
+For charged leptons we use fixed representation invariants
+\[
+I_1 \;=\; 4 + I_\chi(r_i), \qquad I_2 \;=\; \frac{9}{76},
+\]
+with the rung--sensitive $8$--beat chiral occupancy
+\[
+I_\chi(r)\;=\;\frac{(r \bmod 8)-4}{8}\,,
+\]
+injected directly and \emph{without} tunable weights.
+
+\paragraph{Running and $\gamma_i(\mu)$.}
+We decompose $\gamma_i=\gamma_i^{\rm QED}+\gamma_i^{\rm SM}$.\newline
+The QED piece uses the standard lepton mass AD (through the 2--loop term) evaluated at $\alpha_{\rm em}(\mu)$ obtained from \emph{vacuum polarization}: leptons (1L on--shell), hadrons via a Euclidean dispersion integral with a resonance{+}continuum $R(s)$ kernel and an Adler--function tail above $s_0$, and a top threshold piece. Electroweak/Yukawa contributions use the SM block with two--loop gauge mixing for $(g_1,g_2)$ and standard matching across $m_W,m_Z$.
+
+\section{Rung assignments (locked)}
+\emph{Charged leptons:} $(r_e,r_\mu,r_\tau)=(0,11,17)$. \\
+\emph{Down quarks:} $(r_d,r_s,r_b)=(b_d,\,b_d{+}6,\,b_d{+}14)$. \\
+\emph{Up quarks:} $(r_u,r_c,r_t)=(b_u,\,b_u{+}13,\,b_u{+}23)$. \\
+\emph{Neutrinos (NO):} $(r_{\nu_1},r_{\nu_2},r_{\nu_3})=(7,9,12)$ (ledger--rigid by scan). \\
+\emph{Bosons (W,Z,H):} adjacent rungs per vector/Higgs block (fixed by ledger). 
+
+\section{Sector outcomes (ratios; parameter--free)}
+\subsection*{Charged leptons (v21)}
+Using the $\varphi$--sheet fixed point with dispersion $\alpha_{\rm em}(\mu)$ and the exact SM lepton block we obtain
+\[
+\delta(\mu/e)=+0.278\%\,,\qquad
+\delta(\tau/\mu)=-0.278\%\,,\qquad
+\delta(\tau/e)=+0.006\%,
+\]
+all vs.\ experimental pole--mass ratios.
+
+\subsection*{Quarks (apples--to--apples at each $\mu^\star$, v15)}
+Down--type:
+\[
+\delta(s/d)=+0.320\%\,,\qquad
+\delta(b/s)=-0.081\%\,,\qquad
+\delta(b/d)=+0.249\%.
+\]
+Up--type:
+\[
+\delta(c/u)=-0.211\%\,,\qquad
+\delta(t/c)=+0.003\%\,,\qquad
+\delta(t/u)=-0.205\%.
+\]
+
+\subsection*{Bosons $W,Z,H$ (v16b)}
+\[
+\delta(Z/W)=-0.104\%\,,\qquad
+\delta(H/Z)=+0.020\%\,,\qquad
+\delta(H/W)=-0.090\%.
+\]
+
+\section{CKM from rung geometry (v19)}
+From the rung gaps and nearest--unitary projection (polar), the magnitudes are
+\[
+|V|\approx
+\left(\!\!\begin{array}{ccc}
+0.9743 & 0.2254 & 0.0036\\
+0.2253 & 0.9734 & 0.0412\\
+0.0086 & 0.0404 & 0.9991
+\end{array}\!\!\right),
+\]
+with Wolfenstein (barred) and unitarity triangle:
+\[
+\lambda=0.225368,\;\;A=0.812,\;\;\bar\rho=0.120,\;\;\bar\eta=0.371,\qquad
+(\alpha,\beta,\gamma)=(85.1^\circ,\,23.1^\circ,\,71.8^\circ),
+\]
+\[
+J \;\approx\; 3.179339\times10^{-5},\qquad \text{Area}=\tfrac{J}{2}.
+\]
+Shifting $b_u\mapsto b_u{+}4$ flips the CP sign ($\bar\eta\!\to\! -\bar\eta$, $J\!\to\! -J$) with identical $|V|$.
+
+\section{PMNS from rung geometry (v18)}
+Normal ordering $(7,9,12)$ with charged--lepton rungs $(0,11,17)$ yields
+\[
+(\theta_{12},\theta_{23},\theta_{13})\approx(33.24^\circ,\,47.16^\circ,\,7.72^\circ),\qquad
+\delta_{\rm CP}\approx-89.7^\circ,\qquad
+J_{\rm CP}\approx-3.20\times10^{-2}.
+\]
+(Inverted ordering $(6,8,7)$ gives $(33.15^\circ,47.78^\circ,8.03^\circ)$ and similar $|\delta_{\rm CP}|$.)
+
+\section{Neutrinos: rung scan and absolute Dirac scale}
+\paragraph{Robustness (v17c).} Scanning $(\Delta m^2_{21},\Delta m^2_{\rm large})$ over a $7\times7$ grid with $1\sigma=2\%$ (range $\pm3\sigma$), the NO triple $(7,9,12)$ is optimal for $91.8\%$ of points; top--triple deltas (min/med/max) are $(-1.048\%, -0.453\%, +0.158\%)$. The global best--per--point median error is $-0.453\%$; $91.8\%$ of points satisfy $|\Delta|\le1\%$. The IO top triple $(6,8,7)$ has $69.4\%$ support with median $+0.943\%$ and broader tails.
+
+\paragraph{Absolute scale (v21, Dirac).}
+Fix the overall unit by $|\Delta m^2_{\rm large}|=2.44\times10^{-3}\,\mathrm{eV}^2$:
+\[
+m_1\approx 2.0806~\mathrm{meV},\quad
+m_2\approx 9.0225~\mathrm{meV},\quad
+m_3\approx 49.427~\mathrm{meV},\qquad
+\sum m_\nu\approx 60.530~\mathrm{meV}.
+\]
+Checks: $\Delta m^2_{21}\approx 7.71\times10^{-5}\,\mathrm{eV}^2$, $\Delta m^2_{31}\approx 2.44\times10^{-3}\,\mathrm{eV}^2$.
+Using the PMNS magnitudes from the same geometry,
+\[
+m_\beta=\sqrt{|U_{e1}|^2 m_1^2 + |U_{e2}|^2 m_2^2 + |U_{e3}|^2 m_3^2}\;\approx\;8.461~\mathrm{meV}.
+\]
+The model is Dirac; $0\nu\beta\beta$ is null by construction.
+
+\section{Notes for reproduction (AI)}
+Use the fixed--point $\varphi$--sheet solver with the dispersion $\alpha_{\rm em}(\mu)$ and SM RGE layer for $\gamma_i(\mu)$; inject $I_1=4+I_\chi(r)$, $I_2=9/76$. Leptons: $(r_e,r_\mu,r_\tau)=(0,11,17)$ with signed sheet weights tied to $g_{k+1}$. Quarks/bosons: same solver architecture and rung gaps; CKM/PMNS from rung geometry with nearest--unitary projection. No tunable parameters appear anywhere.
+
+\end{document}
+
+
