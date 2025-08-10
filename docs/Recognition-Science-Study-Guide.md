@@ -354,6 +354,10 @@ Statement. Under dual symmetry \(J(x)=J(1/x)\) for \(x>0\), convexity on the log
 \[ J(x)=\tfrac12\,(x+1/x). \]
 Proof (sketch). Symmetry implies a symmetric Laurent expansion on \(\mathbb C\setminus\{0\}\): \(J(x)=\sum_{n\ge1} c_n\,(x^n+x^{-n})\). The bound forces, for \(x\to\infty\), \(J(x)/(x+1/x)\to c_m\,x^{m-1}\) if any \(c_m\ne0\) with \(m\ge2\), contradicting finiteness; hence \(c_{n\ge2}=0\). With \(J(1)=0\) and convexity/positivity near \(x=1\), \(c_1=1/2\). QED.
 
+Acceptance checks.
+- Provide a one‑line inequality showing any added \(x^n+x^{-n}\) with \(n\ge2\) violates the global growth bound.
+- Verify convexity on the log‑axis for \(J(x)=\tfrac12(x+1/x)\); show failure for any nontrivial \(n\ge2\) admixture.
+
 ### Theorem (Stable distinction dimension \(d=3\))
 Statement. A non‑erasable dual‑balanced record requires \(d=3\); \(d=2\) and \(d\ge4\) forbid stable linkage.
 Proof (sketch). In \(d=2\), by the Jordan curve theorem a simple closed curve bounds a disk; any disjoint curve is null‑homotopic inside the disk ⇒ linking number 0, enabling a continuous erasure of the dual record, lowering total cost—contradiction with ledger positivity/minimization. In \(d\ge4\), by Alexander duality/ambient isotopy any pair of disjoint 1‑cycles can be unlinked without intersection ⇒ erasable at zero cost. In \(d=3\), a Hopf link with \(\operatorname{Lk}=1\) exists; linking number is invariant under ambient isotopy, so erasure requires a crossing that flips all nine ledger \(\mathbb Z_2\) parities, incurring irreducible cost \(\ln\varphi\). Hence the record is stable and \(d=3\) is minimal. QED.
@@ -366,6 +370,15 @@ Sketch. Each crossing toggles the orientation of the dual tours with respect to 
 ### Theorem (Eight‑tick minimality; \(2^D\) generalization)
 Statement. A ledger‑compatible recognition that is spatially complete on the \(D\)‑hypercube graph \(Q_D\) has minimal period \(T=2^D\).
 Proof (sketch). Existence: a Gray code yields a Hamiltonian cycle visiting each of the \(2^D\) vertices exactly once. Minimality: atomicity entails one edge per tick; spatial completeness requires visiting all \(2^D\) distinct vertices within one period; any shorter \(T<2^D\) misses at least one vertex or revisits, violating completeness. Thus \(T=2^D\); for \(D=3\), \(T=8\). QED.
+
+Acceptance checks.
+- Exhibit an explicit Gray‑code cycle for \(Q_3\) with one‑edge‑per‑tick, e.g.
+  000 → 001 → 011 → 010 → 110 → 111 → 101 → 100.
+- State the counting argument that any \(T<2^D\) contradicts spatial completeness under the atomic‑tick rule (one edge advancement per tick).
+
+Acceptance checks.
+- Exhibit an explicit Gray‑code cycle for \(Q_3\) (8‑beat) with one‑edge‑per‑tick.
+- State the counting argument that any \(T<2^D\) contradicts spatial completeness under the atomic‑tick rule.
 
 ## P0 execution plan (actionable tasks)
 - P0a (J‑uniqueness):
