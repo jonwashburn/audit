@@ -70,6 +70,15 @@ except Exception as e:
     status['cons_2d_var'] = run_conservation('conservation_check_varying_w.py', 'conservation_check_varying.json')
     # Conservation 3D
     status['cons_3d'] = run_conservation('conservation_check_3d.py', 'conservation_check_3d.json')
+    # Metrics presence and badges
+    try:
+        subprocess.run([sys.executable, str(SCRIPTS / 'metrics.py')], check=True)
+        with open(DOCS / 'metrics.json', 'r') as f:
+            mx = json.load(f)
+        all_green = bool(mx.get('badges', {}).get('all_green', False))
+        status['metrics'] = {'passed': all_green, 'path': str(DOCS / 'metrics.json')}
+    except Exception as e:
+        status['metrics'] = {'passed': False, 'error': str(e)}
     # Uncertainties presence check
     try:
         unc_path = DOCS / 'masses_uncertainties.json'
