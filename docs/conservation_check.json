@@ -1,0 +1,12 @@
+{
+  "last_updated": "2025-08-10 02:58:39 UTC",
+  "conservation_check": {
+    "grid": "33x33",
+    "spacing": 1.0,
+    "expected": 4.0,
+    "max_abs_err": 0.0,
+    "count_interior": 961,
+    "passed": true,
+    "note": "Central-difference Laplacian of i^2+j^2 with w=1 equals 4 on interior nodes."
+  }
+}

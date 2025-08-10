@@ -1,0 +1,13 @@
+{
+  "last_updated": "2025-08-10 03:03:04 UTC",
+  "conservation_check_varying": {
+    "grid": "33x33",
+    "spacing": 1.0,
+    "a_param": 0.0001,
+    "sum_div_interior": 3390.241677098804,
+    "flux_out_boundary": 3390.241677098801,
+    "abs_residual": 2.7284841053187847e-12,
+    "passed": true,
+    "note": "Discrete divergence theorem: interior sum equals boundary flux (varying w)."
+  }
+}
