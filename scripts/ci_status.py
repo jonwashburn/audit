@@ -169,6 +169,141 @@ if __name__ == '__main__':
         'uncertainties': 'Presence/shape of docs/masses_uncertainties.json; values may be zero until measured/model uncertainties are provided.',
         'z_in_grids': 'Asserts each (a,k) grid cell reports redshift z=1/a−1 for clarity.'
     }
+
+    # Build per-check details (purpose, method, result, meaning)
+    def check_detail(key, purpose, method, meaning, result_builder=None):
+        info = status.get(key, {}) if isinstance(status.get(key, {}), dict) else {}
+        passed = bool(info.get('passed', False))
+        result = ''
+        try:
+            if callable(result_builder):
+                result = result_builder(info)
+        except Exception:
+            result = ''
+        return {
+            'passed': passed,
+            'purpose': purpose,
+            'method': method,
+            'result': result,
+            'meaning': meaning,
+        }
+
+    # Compose results strings
+    status_stdout = lambda info: (info.get('stdout', '') or '').splitlines()[:4]
+    def first_lines(info):
+        lines = status_stdout(info)
+        return '\n'.join(lines)
+
+    checks = {
+        'gates': check_detail(
+            'gates',
+            purpose='Verify parity-gate combinatorics: |B|=46 blocked ticks → S=489/512 (no knobs).',
+            method='Brute-force enumeration plus inclusion–exclusion analytic count over the 1024-tick schedule.',
+            meaning='Fixes suppression S and derived β=(T·N_gates)/S used consistently in growth and lensing.',
+            result_builder=first_lines,
+        ),
+        'ilg_limits': check_detail(
+            'ilg_limits',
+            purpose='Confirm ILG kernel recovers Newtonian (μ→1) and has controlled deep-regime behavior.',
+            method='Numerical probes over (a,k) with sweep serialized to docs/ilg_limit_checks.json.',
+            meaning='Shows the same kernel behaves correctly across regimes; prerequisite for cosmology reuse.',
+            result_builder=lambda i: i.get('path','') or i.get('error',''),
+        ),
+        'growth_json': check_detail(
+            'growth_json',
+            purpose='Ensure structure-growth export is present and well-formed.',
+            method='Schema check for docs/demo_results.json with required keys.',
+            meaning='Guarantees reproducible inputs for the audit page and downstream analysis.',
+            result_builder=lambda i: i.get('path',''),
+        ),
+        'lensing_json': check_detail(
+            'lensing_json',
+            purpose='Ensure lensing export is present and well-formed.',
+            method='Schema check for docs/lensing_results.json with required keys.',
+            meaning='Guarantees reproducible inputs for the audit page and downstream analysis.',
+            result_builder=lambda i: i.get('path',''),
+        ),
+        'cons_2d_const': check_detail(
+            'cons_2d_const',
+            purpose='Check discrete Laplacian/Poisson behavior on a 2D grid (constant w=1).',
+            method='Run conservation_check.py and validate residuals.',
+            meaning='Validates core conservation laws in a simple controlled setting.',
+            result_builder=first_lines,
+        ),
+        'cons_2d_var': check_detail(
+            'cons_2d_var',
+            purpose='Verify discrete divergence theorem with varying w in 2D.',
+            method='Run conservation_check_varying_w.py and compare source vs flux.',
+            meaning='Confirms numerical soundness of variable-kernel flux bookkeeping.',
+            result_builder=first_lines,
+        ),
+        'cons_3d': check_detail(
+            'cons_3d',
+            purpose='Validate 3D Laplacian and varying-w divergence checks on a voxel cube.',
+            method='Run conservation_check_3d.py and parse reported pass/fail.',
+            meaning='Extends conservation verification to the 3D lattice used by the framework.',
+            result_builder=first_lines,
+        ),
+        'masses_json': check_detail(
+            'masses_json',
+            purpose='Ensure mass/mixing snapshot export contains all sectors.',
+            method='Schema check for docs/masses_snapshot.json.',
+            meaning='Provides reproducible mass ratio tables used by the audit page.',
+            result_builder=lambda i: i.get('path','') or i.get('error',''),
+        ),
+        'metrics': check_detail(
+            'metrics',
+            purpose='Aggregate domain residual metrics and derive badges.',
+            method='Run scripts/metrics.py and check badges.all_green.',
+            meaning='Summarizes fit-free residuals for mass/cosmology outputs.',
+            result_builder=lambda i: i.get('path','') or ('badges=all_green' if i.get('passed') else 'badges≠all_green'),
+        ),
+        'uncertainties': {
+            'passed': bool(status.get('uncertainties', {}).get('present', False)),
+            'purpose': 'Track presence/shape of uncertainties file (non-gating).',
+            'method': 'Check docs/masses_uncertainties.json exists and has expected keys.',
+            'result': f"present={status.get('uncertainties',{}).get('present', False)}, nonzero={status.get('uncertainties',{}).get('nonzero', False)}",
+            'meaning': 'Documentation quality; does not gate evidence checks.',
+        },
+        'z_in_grids': check_detail(
+            'z_in_grids',
+            purpose='Require redshift z to be included in all grid rows for clarity.',
+            method='Schema scan across growth/lensing grids.',
+            meaning='Ensures interpretability of reported tables.',
+            result_builder=lambda i: 'ok' if i.get('passed') else i.get('error','missing z'),
+        ),
+    }
+
+    status['checks'] = checks
+
+    # Conservative overall verdict: never equate "passed" with truth claim
+    # Load high-level status to detect unresolved P0 items
+    try:
+        with open(DOCS / 'status.json', 'r') as f:
+            st = json.load(f)
+    except Exception:
+        st = {}
+
+    p0_open = []
+    for le in st.get('loose_ends', []) or []:
+        if (le.get('priority') == 'P0'):
+            st_lower = (le.get('status','') or '').strip().lower()
+            if st_lower not in {'closed','complete','completed','proven','proved','resolved','mechanized'}:
+                p0_open.append(le.get('item', 'P0 item'))
+
+    vouched = summary and not p0_open
+    level = 'vouched' if vouched else ('evidence-passing' if summary else 'failing')
+    verdict = {
+        'vouched': vouched,
+        'level': level,
+        'criteria': [
+            'All evidence checks pass',
+            'No unresolved P0 proof obligations remain',
+        ],
+        'blockers': p0_open if not vouched else [],
+        'note': 'Evidence checks passing does not assert truth; vouching requires all P0 items resolved.'
+    }
+    status['verdict'] = verdict
     # Write
     out_path = DOCS / 'ci_status.json'
     with open(out_path, 'w') as f:

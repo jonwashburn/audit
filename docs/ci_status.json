@@ -1,5 +1,5 @@
 {
-  "last_updated": "2025-08-10 18:57:56 UTC",
+  "last_updated": "2025-08-10 19:10:16 UTC",
   "gates": {
     "passed": true,
     "stdout": "|B| (brute)   = 46\nS   (brute)   = 1 - 46/1024 -> 0.955078125\n|B| (analytic)= 46\nS   (analytic)= 1 - 46/1024 -> 0.955078125"
@@ -66,5 +66,100 @@
     "metrics": "Aggregated residual metrics computed and badges derived.",
     "uncertainties": "Presence/shape of docs/masses_uncertainties.json; values may be zero until measured/model uncertainties are provided.",
     "z_in_grids": "Asserts each (a,k) grid cell reports redshift z=1/a\u22121 for clarity."
+  },
+  "checks": {
+    "gates": {
+      "passed": true,
+      "purpose": "Verify parity-gate combinatorics: |B|=46 blocked ticks \u2192 S=489/512 (no knobs).",
+      "method": "Brute-force enumeration plus inclusion\u2013exclusion analytic count over the 1024-tick schedule.",
+      "result": "|B| (brute)   = 46\nS   (brute)   = 1 - 46/1024 -> 0.955078125\n|B| (analytic)= 46\nS   (analytic)= 1 - 46/1024 -> 0.955078125",
+      "meaning": "Fixes suppression S and derived \u03b2=(T\u00b7N_gates)/S used consistently in growth and lensing."
+    },
+    "ilg_limits": {
+      "passed": true,
+      "purpose": "Confirm ILG kernel recovers Newtonian (\u03bc\u21921) and has controlled deep-regime behavior.",
+      "method": "Numerical probes over (a,k) with sweep serialized to docs/ilg_limit_checks.json.",
+      "result": "/Volumes/T9/Cursor-Active/Aug8-papers/audit/docs/ilg_limit_checks.json",
+      "meaning": "Shows the same kernel behaves correctly across regimes; prerequisite for cosmology reuse."
+    },
+    "growth_json": {
+      "passed": true,
+      "purpose": "Ensure structure-growth export is present and well-formed.",
+      "method": "Schema check for docs/demo_results.json with required keys.",
+      "result": "/Volumes/T9/Cursor-Active/Aug8-papers/audit/docs/demo_results.json",
+      "meaning": "Guarantees reproducible inputs for the audit page and downstream analysis."
+    },
+    "lensing_json": {
+      "passed": true,
+      "purpose": "Ensure lensing export is present and well-formed.",
+      "method": "Schema check for docs/lensing_results.json with required keys.",
+      "result": "/Volumes/T9/Cursor-Active/Aug8-papers/audit/docs/lensing_results.json",
+      "meaning": "Guarantees reproducible inputs for the audit page and downstream analysis."
+    },
+    "cons_2d_const": {
+      "passed": true,
+      "purpose": "Check discrete Laplacian/Poisson behavior on a 2D grid (constant w=1).",
+      "method": "Run conservation_check.py and validate residuals.",
+      "result": "Wrote docs/conservation_check.json: passed=True, max_abs_err=0.000e+00",
+      "meaning": "Validates core conservation laws in a simple controlled setting."
+    },
+    "cons_2d_var": {
+      "passed": true,
+      "purpose": "Verify discrete divergence theorem with varying w in 2D.",
+      "method": "Run conservation_check_varying_w.py and compare source vs flux.",
+      "result": "Wrote docs/conservation_check_varying.json: passed=True, |sum-div - flux|=2.728e-12",
+      "meaning": "Confirms numerical soundness of variable-kernel flux bookkeeping."
+    },
+    "cons_3d": {
+      "passed": true,
+      "purpose": "Validate 3D Laplacian and varying-w divergence checks on a voxel cube.",
+      "method": "Run conservation_check_3d.py and parse reported pass/fail.",
+      "result": "Wrote docs/conservation_check_3d.json: Laplacian OK=True, Varying-w OK=True",
+      "meaning": "Extends conservation verification to the 3D lattice used by the framework."
+    },
+    "masses_json": {
+      "passed": true,
+      "purpose": "Ensure mass/mixing snapshot export contains all sectors.",
+      "method": "Schema check for docs/masses_snapshot.json.",
+      "result": "/Volumes/T9/Cursor-Active/Aug8-papers/audit/docs/masses_snapshot.json",
+      "meaning": "Provides reproducible mass ratio tables used by the audit page."
+    },
+    "metrics": {
+      "passed": true,
+      "purpose": "Aggregate domain residual metrics and derive badges.",
+      "method": "Run scripts/metrics.py and check badges.all_green.",
+      "result": "/Volumes/T9/Cursor-Active/Aug8-papers/audit/docs/metrics.json",
+      "meaning": "Summarizes fit-free residuals for mass/cosmology outputs."
+    },
+    "uncertainties": {
+      "passed": true,
+      "purpose": "Track presence/shape of uncertainties file (non-gating).",
+      "method": "Check docs/masses_uncertainties.json exists and has expected keys.",
+      "result": "present=True, nonzero=False",
+      "meaning": "Documentation quality; does not gate evidence checks."
+    },
+    "z_in_grids": {
+      "passed": true,
+      "purpose": "Require redshift z to be included in all grid rows for clarity.",
+      "method": "Schema scan across growth/lensing grids.",
+      "result": "ok",
+      "meaning": "Ensures interpretability of reported tables."
+    }
+  },
+  "verdict": {
+    "vouched": false,
+    "level": "evidence-passing",
+    "criteria": [
+      "All evidence checks pass",
+      "No unresolved P0 proof obligations remain"
+    ],
+    "blockers": [
+      "Cubic\u2013tiling minimality",
+      "ILG kernel uniqueness",
+      "1024\u2011tick minimal\u2011cancellation theorem",
+      "Rung uniqueness proof",
+      "LNAL minimality/completeness"
+    ],
+    "note": "Evidence checks passing does not assert truth; vouching requires all P0 items resolved."
   }
 }
