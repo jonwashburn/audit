@@ -417,6 +417,36 @@ Acceptance checks.
 
 Acceptance: explicit \(w(r)\) satisfying these, with proofs of limits and conservation; reused in at least two independent predictions.
 
+### Gating‑derived scale proxy (\(\beta\)) and ΛCDM limits
+
+- Parity‑gate geometry over the 1024‑tick breath fixes the recognition capacity schedule. The nine‑gate suppression is \(\mathcal S=489/512\). A natural, parameter‑free scale proxy in the acceleration estimator is
+  \[ \beta_{\text{gates}}\;=\;\frac{T_{\text{breath}}\,N_{\text{gates}}}{\mathcal S}\;=\;\frac{1024\cdot 9}{489/512}\;\approx\;9.65\times10^{3}. \]
+  This rescales the characteristic acceleration \(a_{\rm char}\) in the proxy \(a_{\rm char}\sim \beta\,(aH)^2/k\), ensuring mild, scale‑dependent deviations without any tuning.
+
+- ΛCDM recovery: as \(a\to 0\) (early times) or at high accelerations (small scales/large \(k\)), \(x=a_0/a_{\rm char}\to 0\) and \(\mu=1+x/(1+x)\to1\), so the kernel reduces to GR in both limits.
+
+Illustrative grid (canonical \(\beta_{\text{gates}}\), \(a_0\) fixed by S):
+
+- Lensing response \(\Sigma(a,k)=\mu(a,k)\):
+  - \(a=1.0\): \(k=0.01\) → 1.000548; \(k=0.10\) → 1.005452; \(k=0.20\) → 1.010845.
+  - \(a=0.5\): \(k=0.01\) → 1.001413; \(k=0.10\) → 1.013949; \(k=0.20\) → 1.027515.
+
+- Growth factor ratio \(D/ D_{\Lambda\mathrm{CDM}}\):
+  - \(a=1.0\): \(k=0.01\) → 1.006714; \(k=0.10\) → 1.067831; \(k=0.20\) → 1.137133.
+  - \(a=0.5\): \(k=0.01\) → 1.006289; \(k=0.10\) → 1.063405; \(k=0.20\) → 1.127898.
+
+These use the same \(\mu\) in both growth and lensing, with no reweighting.
+
+### ILG uniqueness (variational) — compact lemma and acceptance
+
+Lemma (unique reciprocal kernel under capacity constraint). Let \(\chi\ge0\) be the dimensionless load derived from recognition capacity and dual‑balance gating. Among kernels \(w\in(0,1]\) that (i) are non‑increasing in \(\chi\), (ii) preserve conservation in divergence form, and (iii) obey a per‑breath capacity constraint, the unique action‑minimizer is
+\[ w(\chi)\;=\;\frac{1}{1+\chi}. \]
+Sketch. Minimize \(\mathcal A[w]=\int w\,|\nabla\Phi|^2\,dV\) subject to \(\int (1-w)\,\mathcal C\,dV\le\Lambda\) with \(\mathcal C\propto\chi\). Stationarity yields \(|\nabla\Phi|^2-\lambda\,\mathcal C=0\Rightarrow w=1/(1+\chi)\) after normalization. Convexity gives uniqueness; limits \(\chi\to0,\infty\) reproduce Newtonian and information‑limited regimes.
+
+Acceptance checklist.
+- State \(\chi\) from the gating capacity model (no knobs); show \(w\) respects conservation and the Newtonian/MOND‑like limits.
+- Re‑use the same \(w\) (same \(\beta_{\text{gates}}\), \(a_0\)) in at least two domains (growth and lensing) without any reweighting.
+
 ## Cubic‑tiling minimality (AIT skeleton)
 - **Domain**: homogeneous, isotropic, discrete 3D manifolds tiling space by congruent voxels; unit‑cell connectivity must be finitely describable.
 - **Cost**: configuration description length \(K(\mathcal M)\) (Kolmogorov/algorithmic cost) measured per unit volume.
