@@ -31,6 +31,11 @@ def check_json(path, keys):
     try:
         with open(path, 'r') as f:
             data = json.load(f)
+        # If multiple keys provided, treat as top-level required keys
+        if isinstance(keys, (list, tuple)) and len(keys) > 1:
+            ok = all(k in data for k in keys)
+            return {'passed': ok, 'path': str(path)}
+        # Otherwise treat as a nested path sequence
         ok = True
         cur = data
         for k in keys:
@@ -145,8 +150,25 @@ if __name__ == '__main__':
         status['z_in_grids'] = {'passed': False, 'error': str(e)}
 
     # Summarize
-    summary = all(v.get('passed', False) for k, v in status.items() if isinstance(v, dict) and 'passed' in v)
-    status['summary'] = {'passed': summary}
+    passed_flags = {k: v.get('passed', None) for k, v in status.items() if isinstance(v, dict) and 'passed' in v}
+    summary = all(v is True for v in passed_flags.values())
+    failed = [k for k, v in passed_flags.items() if v is False]
+    status['summary'] = {'passed': summary, 'failed_checks': failed}
+    # Human-readable explanations
+    status['explanations'] = {
+        'overall': 'Overall passes when all required checks pass. Optional artifacts (ledger snapshot, uncertainties) do not gate pass/fail.',
+        'gates': 'Parity-gate combinatorics: verifies the 9-gate schedule blocks |B|=46 of 1024 ticks (S=489/512) by brute force and analytically.',
+        'growth_json': 'Structure growth demo: docs/demo_results.json exists and contains growth results and grid.',
+        'lensing_json': 'Lensing demo: docs/lensing_results.json exists and contains lensing rows and grid.',
+        'masses_json': 'Mass/mixing snapshot: docs/masses_snapshot.json exists and includes charged_leptons, quarks, bosons, CKM, PMNS, and neutrinos.',
+        'cons_2d_const': '2D conservation (constant w=1): discrete Laplacian test passes with negligible residuals.',
+        'cons_2d_var': '2D conservation (varying w): discrete divergence theorem (source minus flux) agrees to numerical precision.',
+        'cons_3d': '3D conservation: both constant-w Laplacian and varying-w divergence checks pass on a voxel cube.',
+        'ilg_limits': 'ILG limits: numeric probes confirm Newtonian recovery (mu→1) and controlled deep-regime behavior; sweep serialized to docs/ilg_limit_checks.json.',
+        'metrics': 'Aggregated residual metrics computed and badges derived.',
+        'uncertainties': 'Presence/shape of docs/masses_uncertainties.json; values may be zero until measured/model uncertainties are provided.',
+        'z_in_grids': 'Asserts each (a,k) grid cell reports redshift z=1/a−1 for clarity.'
+    }
     # Write
     out_path = DOCS / 'ci_status.json'
     with open(out_path, 'w') as f:

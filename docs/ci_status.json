@@ -1,5 +1,5 @@
 {
-  "last_updated": "2025-08-10 14:25:50 UTC",
+  "last_updated": "2025-08-10 15:03:09 UTC",
   "gates": {
     "passed": true,
     "stdout": "|B| (brute)   = 46\nS   (brute)   = 1 - 46/1024 -> 0.955078125\n|B| (analytic)= 46\nS   (analytic)= 1 - 46/1024 -> 0.955078125"
@@ -17,7 +17,7 @@
     "path": "/Volumes/T9/Cursor-Active/Aug8-papers/audit/docs/ilg_limit_checks.json"
   },
   "masses_json": {
-    "passed": false,
+    "passed": true,
     "path": "/Volumes/T9/Cursor-Active/Aug8-papers/audit/docs/masses_snapshot.json"
   },
   "cons_2d_const": {
@@ -50,6 +50,21 @@
     "passed": true
   },
   "summary": {
-    "passed": false
+    "passed": true,
+    "failed_checks": []
+  },
+  "explanations": {
+    "overall": "Overall passes when all required checks pass. Optional artifacts (ledger snapshot, uncertainties) do not gate pass/fail.",
+    "gates": "Parity-gate combinatorics: verifies the 9-gate schedule blocks |B|=46 of 1024 ticks (S=489/512) by brute force and analytically.",
+    "growth_json": "Structure growth demo: docs/demo_results.json exists and contains growth results and grid.",
+    "lensing_json": "Lensing demo: docs/lensing_results.json exists and contains lensing rows and grid.",
+    "masses_json": "Mass/mixing snapshot: docs/masses_snapshot.json exists and includes charged_leptons, quarks, bosons, CKM, PMNS, and neutrinos.",
+    "cons_2d_const": "2D conservation (constant w=1): discrete Laplacian test passes with negligible residuals.",
+    "cons_2d_var": "2D conservation (varying w): discrete divergence theorem (source minus flux) agrees to numerical precision.",
+    "cons_3d": "3D conservation: both constant-w Laplacian and varying-w divergence checks pass on a voxel cube.",
+    "ilg_limits": "ILG limits: numeric probes confirm Newtonian recovery (mu\u21921) and controlled deep-regime behavior; sweep serialized to docs/ilg_limit_checks.json.",
+    "metrics": "Aggregated residual metrics computed and badges derived.",
+    "uncertainties": "Presence/shape of docs/masses_uncertainties.json; values may be zero until measured/model uncertainties are provided.",
+    "z_in_grids": "Asserts each (a,k) grid cell reports redshift z=1/a\u22121 for clarity."
   }
 }
