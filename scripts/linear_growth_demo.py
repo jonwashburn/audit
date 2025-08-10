@@ -3,41 +3,11 @@ import math
 import argparse
 import json
 import os
-from dataclasses import dataclass
 from datetime import datetime
-
-@dataclass
-class Cosmo:
-    H0: float = 70.0  # km/s/Mpc
-    Omega_m0: float = 0.3
-    Omega_L0: float = 0.7
-    h: float = 0.7
+from ilg_common import Cosmo, a_char, mu_eff, compute_a0_from_kappa, kappa_for_target_a0, gating_beta
 
 KM_S_MPC_TO_SI = 1000.0 / (3.085677581e22)
 MPC_TO_M = 3.085677581e22
-
-def E(a, cosmo: Cosmo):
-    return math.sqrt(cosmo.Omega_m0 / a**3 + cosmo.Omega_L0)
-
-def H(a, cosmo: Cosmo):
-    return cosmo.H0 * KM_S_MPC_TO_SI * E(a, cosmo)
-
-def k_phys(a, k_hmpc, cosmo: Cosmo):
-    # k in h/Mpc -> comoving 1/m, then physical 1/m
-    k_com_mpc = k_hmpc * cosmo.h  # 1/Mpc
-    k_com_si = k_com_mpc / MPC_TO_M  # 1/m
-    return k_com_si / a  # physical 1/m
-
-def a_char(a, k_hmpc, cosmo: Cosmo, beta=1.0):
-    # dimensionally: a_char ~ (a H)^2 / k_phys  [m/s^2]
-    kp = k_phys(a, k_hmpc, cosmo)
-    return beta * (a * H(a, cosmo))**2 / max(kp, 1e-30)
-
-def mu_eff(a, k_hmpc, a0, cosmo: Cosmo, beta=1.0):
-    ach = a_char(a, k_hmpc, cosmo, beta)
-    x = a0 / max(ach, 1e-30)
-    # capped enhancement: μ = 1 + x/(1+x) ∈ (1,2)
-    return 1.0 + x / (1.0 + x)
 
 def growth_rhs(ln_a, y, k_hmpc, a0, cosmo: Cosmo, beta: float):
     a = math.exp(ln_a)
@@ -71,32 +41,6 @@ def integrate_growth(a_start=1e-3, a_end=1.0, k_hmpc=0.1, a0=1.2e-10, N=400, bet
 
 # ------------------- ILG a0 from canonical schedule -------------------
 
-def compute_lambda_rec():
-    # Planck length (recognition length) λ_rec = sqrt(ħ G / c^3)
-    HBAR = 1.054_571_817e-34  # J s
-    G_SI = 6.674_30e-11       # m^3 kg^-1 s^-2
-    C_SI = 299_792_458.0      # m s^-1
-    return math.sqrt(HBAR * G_SI / (C_SI**3))
-
-
-def compute_a0_from_kappa(kappa: float) -> float:
-    # a0 = κ * (c^2/λ_rec) * (S / (T_breath * N_gates)), with S = 489/512, T=1024, N_gates=9
-    C_SI = 299_792_458.0
-    lam_rec = compute_lambda_rec()
-    S = 489.0 / 512.0
-    T = 1024.0
-    N_gates = 9.0
-    return kappa * (C_SI**2 / lam_rec) * (S / (T * N_gates))
-
-
-def kappa_for_target_a0(a0_target: float) -> float:
-    C_SI = 299_792_458.0
-    lam_rec = compute_lambda_rec()
-    S = 489.0 / 512.0
-    T = 1024.0
-    N_gates = 9.0
-    denom = (C_SI**2 / lam_rec) * (S / (T * N_gates))
-    return a0_target / denom if denom > 0 else 0.0
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Linear growth with ILG kernel (canonical schedule).')
@@ -119,11 +63,8 @@ if __name__ == '__main__':
         kappa_note = 'user κ'
 
     a0 = compute_a0_from_kappa(kappa)
-    # gating-derived beta: β_gates = (T * N_gates) / S
-    S = 489.0/512.0
-    T = 1024.0
-    N_gates = 9.0
-    beta_gates = (T * N_gates) / S
+    # gating-derived beta
+    beta_gates = gating_beta()
     beta = args.beta if args.beta is not None else beta_gates
 
     ks = [float(s) for s in args.ks.split(',') if s]

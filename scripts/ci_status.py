@@ -55,15 +55,23 @@ if __name__ == '__main__':
     status['gates'] = run_gates_check()
     # Growth JSON
     status['growth_json'] = check_json(DOCS / 'demo_results.json', ['growth'])
-# Lensing JSON
-status['lensing_json'] = check_json(DOCS / 'lensing_results.json', ['lensing'])
-# Masses snapshot JSON
-try:
-    # Generate fresh snapshot each run
-    subprocess.run([sys.executable, str(SCRIPTS / 'masses_snapshot_json.py')], check=True)
-    status['masses_json'] = check_json(DOCS / 'masses_snapshot.json', ['charged_leptons', 'quarks', 'bosons', 'ckm', 'pmns', 'neutrinos'])
-except Exception as e:
-    status['masses_json'] = {'passed': False, 'error': str(e)}
+    # Lensing JSON
+    status['lensing_json'] = check_json(DOCS / 'lensing_results.json', ['lensing'])
+    # ILG numeric limit checks
+    try:
+        subprocess.run([sys.executable, str(SCRIPTS / 'ilg_limit_checks.py')], check=True)
+        with open(DOCS / 'ilg_limit_checks.json', 'r') as f:
+            _ = json.load(f)
+        status['ilg_limits'] = {'passed': True, 'path': str(DOCS / 'ilg_limit_checks.json')}
+    except Exception as e:
+        status['ilg_limits'] = {'passed': False, 'error': str(e)}
+    # Masses snapshot JSON
+    try:
+        # Generate fresh snapshot each run
+        subprocess.run([sys.executable, str(SCRIPTS / 'masses_snapshot_json.py')], check=True)
+        status['masses_json'] = check_json(DOCS / 'masses_snapshot.json', ['charged_leptons', 'quarks', 'bosons', 'ckm', 'pmns', 'neutrinos'])
+    except Exception as e:
+        status['masses_json'] = {'passed': False, 'error': str(e)}
     # Conservation 2D constant-w
     status['cons_2d_const'] = run_conservation('conservation_check.py', 'conservation_check.json')
     # Conservation 2D varying-w
@@ -115,6 +123,27 @@ except Exception as e:
         status['uncertainties'] = {'present': present, 'keys_ok': keys_ok, 'nonzero': nonzero}
     except Exception as e:
         status['uncertainties'] = {'present': False, 'keys_ok': False, 'nonzero': False, 'error': str(e)}
+    # Verify z present in grids
+    try:
+        okz = True
+        # growth grid
+        with open(DOCS / 'demo_results.json', 'r') as f:
+            gr = json.load(f)
+        for cell in gr.get('grid', []):
+            if 'z' not in cell:
+                okz = False
+                break
+        # lensing grid
+        with open(DOCS / 'lensing_results.json', 'r') as f:
+            lj = json.load(f)
+        for cell in lj.get('grid', []):
+            if 'z' not in cell:
+                okz = False
+                break
+        status['z_in_grids'] = {'passed': okz}
+    except Exception as e:
+        status['z_in_grids'] = {'passed': False, 'error': str(e)}
+
     # Summarize
     summary = all(v.get('passed', False) for k, v in status.items() if isinstance(v, dict) and 'passed' in v)
     status['summary'] = {'passed': summary}
