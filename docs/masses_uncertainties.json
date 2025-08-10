@@ -1,0 +1,24 @@
+{
+  "ckm": {
+    "V_unc": [[0.0,0.0,0.0],[0.0,0.0,0.0],[0.0,0.0,0.0]],
+    "lambda_unc": 0.0,
+    "A_unc": 0.0,
+    "rho_bar_unc": 0.0,
+    "eta_bar_unc": 0.0,
+    "alpha_unc_deg": 0.0,
+    "beta_unc_deg": 0.0,
+    "gamma_unc_deg": 0.0,
+    "J_unc": 0.0
+  },
+  "pmns": {
+    "theta12_unc_deg": 0.0,
+    "theta23_unc_deg": 0.0,
+    "theta13_unc_deg": 0.0,
+    "delta_CP_unc_deg": 0.0,
+    "J_CP_unc": 0.0
+  },
+  "neutrinos": {
+    "masses_unc_meV": [0.0,0.0,0.0],
+    "sum_mnu_unc_meV": 0.0
+  }
+}

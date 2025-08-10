@@ -1,5 +1,5 @@
 {
-  "last_updated": "2025-08-10 04:37:31 UTC",
+  "last_updated": "2025-08-10 04:50:53 UTC",
   "charged_leptons": {
     "rungs": {
       "e": 0,
@@ -64,7 +64,32 @@
     "beta_deg": 23.1,
     "gamma_deg": 71.8,
     "J": 3.179339e-05,
-    "version": "v19"
+    "version": "v19",
+    "V_unc": [
+      [
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0
+      ]
+    ],
+    "lambda_unc": 0.0,
+    "A_unc": 0.0,
+    "rho_bar_unc": 0.0,
+    "eta_bar_unc": 0.0,
+    "alpha_unc_deg": 0.0,
+    "beta_unc_deg": 0.0,
+    "gamma_unc_deg": 0.0,
+    "J_unc": 0.0
   },
   "pmns": {
     "theta12_deg": 33.24,
@@ -72,7 +97,12 @@
     "theta13_deg": 7.72,
     "delta_CP_deg": -89.7,
     "J_CP": -0.032,
-    "version": "v18"
+    "version": "v18",
+    "theta12_unc_deg": 0.0,
+    "theta23_unc_deg": 0.0,
+    "theta13_unc_deg": 0.0,
+    "delta_CP_unc_deg": 0.0,
+    "J_CP_unc": 0.0
   },
   "neutrinos": {
     "ordering": "NO",
@@ -91,7 +121,13 @@
     "delta_m31_sq_eV2": 0.00244,
     "m_beta_meV": 8.461,
     "dirac": true,
-    "version": "v21"
+    "version": "v21",
+    "masses_unc_meV": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "sum_mnu_unc_meV": 0.0
   },
   "notes": "Parameter-free phi-sheet and ledger-locked rungs; no sector-specific knobs (AI snapshot v21)."
 }
