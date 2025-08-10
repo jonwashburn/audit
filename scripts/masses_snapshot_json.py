@@ -94,6 +94,69 @@ def main():
     with open(out_path, 'w') as f:
         json.dump(data, f, indent=2)
     print(f'Wrote {out_path}')
+    # Also write a compact CSV for download
+    csv_path = DOCS / 'masses_snapshot.csv'
+    rows = []
+    # Helper to append
+    def add(category: str, name: str, value, unit: str = '', version: str = ''):
+        rows.append((category, name, value, unit, version))
+
+    # Charged leptons
+    cl = data['charged_leptons']
+    add('charged_leptons', 'mu_over_e_delta_pct', cl['deltas_pct']['mu_over_e'], 'percent', cl.get('version',''))
+    add('charged_leptons', 'tau_over_mu_delta_pct', cl['deltas_pct']['tau_over_mu'], 'percent', cl.get('version',''))
+    add('charged_leptons', 'tau_over_e_delta_pct', cl['deltas_pct']['tau_over_e'], 'percent', cl.get('version',''))
+    # Quarks down/up
+    q = data['quarks']
+    add('quarks_down', 's_over_d_delta_pct', q['down']['deltas_pct']['s_over_d'], 'percent', q.get('version',''))
+    add('quarks_down', 'b_over_s_delta_pct', q['down']['deltas_pct']['b_over_s'], 'percent', q.get('version',''))
+    add('quarks_down', 'b_over_d_delta_pct', q['down']['deltas_pct']['b_over_d'], 'percent', q.get('version',''))
+    add('quarks_up', 'c_over_u_delta_pct', q['up']['deltas_pct']['c_over_u'], 'percent', q.get('version',''))
+    add('quarks_up', 't_over_c_delta_pct', q['up']['deltas_pct']['t_over_c'], 'percent', q.get('version',''))
+    add('quarks_up', 't_over_u_delta_pct', q['up']['deltas_pct']['t_over_u'], 'percent', q.get('version',''))
+    # Bosons
+    b = data['bosons']
+    add('bosons', 'Z_over_W_delta_pct', b['deltas_pct']['Z_over_W'], 'percent', b.get('version',''))
+    add('bosons', 'H_over_Z_delta_pct', b['deltas_pct']['H_over_Z'], 'percent', b.get('version',''))
+    add('bosons', 'H_over_W_delta_pct', b['deltas_pct']['H_over_W'], 'percent', b.get('version',''))
+    # CKM
+    ckm = data['ckm']
+    for i, row in enumerate(ckm['V'], start=1):
+        for j, val in enumerate(row, start=1):
+            add('ckm', f'V{i}{j}', val, '', ckm.get('version',''))
+    add('ckm', 'lambda', ckm['lambda'], '', ckm.get('version',''))
+    add('ckm', 'A', ckm['A'], '', ckm.get('version',''))
+    add('ckm', 'rho_bar', ckm['rho_bar'], '', ckm.get('version',''))
+    add('ckm', 'eta_bar', ckm['eta_bar'], '', ckm.get('version',''))
+    add('ckm', 'alpha_deg', ckm['alpha_deg'], 'deg', ckm.get('version',''))
+    add('ckm', 'beta_deg', ckm['beta_deg'], 'deg', ckm.get('version',''))
+    add('ckm', 'gamma_deg', ckm['gamma_deg'], 'deg', ckm.get('version',''))
+    add('ckm', 'J', ckm['J'], '', ckm.get('version',''))
+    # PMNS
+    pmns = data['pmns']
+    add('pmns', 'theta12_deg', pmns['theta12_deg'], 'deg', pmns.get('version',''))
+    add('pmns', 'theta23_deg', pmns['theta23_deg'], 'deg', pmns.get('version',''))
+    add('pmns', 'theta13_deg', pmns['theta13_deg'], 'deg', pmns.get('version',''))
+    add('pmns', 'delta_CP_deg', pmns['delta_CP_deg'], 'deg', pmns.get('version',''))
+    add('pmns', 'J_CP', pmns['J_CP'], '', pmns.get('version',''))
+    # Neutrinos
+    nu = data['neutrinos']
+    add('neutrinos', 'ordering', nu['ordering'], '', nu.get('version',''))
+    add('neutrinos', 'rungs', ' '.join(map(str, nu['rungs'])), '', nu.get('version',''))
+    add('neutrinos', 'm1_meV', nu['masses_meV'][0], 'meV', nu.get('version',''))
+    add('neutrinos', 'm2_meV', nu['masses_meV'][1], 'meV', nu.get('version',''))
+    add('neutrinos', 'm3_meV', nu['masses_meV'][2], 'meV', nu.get('version',''))
+    add('neutrinos', 'sum_mnu_meV', nu['sum_mnu_meV'], 'meV', nu.get('version',''))
+    add('neutrinos', 'delta_m21_sq_eV2', nu['delta_m21_sq_eV2'], 'eV^2', nu.get('version',''))
+    add('neutrinos', 'delta_m31_sq_eV2', nu['delta_m31_sq_eV2'], 'eV^2', nu.get('version',''))
+    add('neutrinos', 'm_beta_meV', nu['m_beta_meV'], 'meV', nu.get('version',''))
+    add('neutrinos', 'dirac', nu['dirac'], '', nu.get('version',''))
+
+    with open(csv_path, 'w') as f:
+        f.write('category,name,value,unit,version\n')
+        for cat, name, val, unit, ver in rows:
+            f.write(f'{cat},{name},{val},{unit},{ver}\n')
+    print(f'Wrote {csv_path}')
 
 
 if __name__ == '__main__':
