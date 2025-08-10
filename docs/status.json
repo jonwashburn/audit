@@ -17,16 +17,16 @@
   "lnal": {
     "opcodes": 16,
     "alphabet": "+4..-4",
-    "minimality_status": "draft generator\u2013relation; \u00b15 excluded by dynamics/density",
+    "minimality_status": "draft proof complete; \u00b15 excluded by Lyapunov/Planck bounds",
     "registers": 6
   },
   "rung_constructor": {
     "group": "C3 * C2 * C\u221e",
-    "status": "draft constructor and minimality sketch",
+    "status": "constructor implemented; uniqueness proof drafted",
     "baseline_rungs": {
-      "e": 0,
-      "mu": 11,
-      "tau": 17
+      "e": 5,
+      "mu": 16,
+      "tau": 22
     }
   },
   "loose_ends": [
@@ -40,13 +40,13 @@
       "id": "LT2",
       "item": "ILG kernel uniqueness",
       "priority": "P0",
-      "status": "in progress"
+      "status": "draft complete"
     },
     {
       "id": "LT3",
       "item": "Alpha closure integers",
-      "priority": "P0",
-      "status": "open"
+      "priority": "P1",
+      "status": "conditionally resolved"
     },
     {
       "id": "LT4",
@@ -58,13 +58,13 @@
       "id": "LT5",
       "item": "Rung uniqueness proof",
       "priority": "P0",
-      "status": "in progress"
+      "status": "draft complete"
     },
     {
       "id": "LT6",
       "item": "LNAL minimality/completeness",
       "priority": "P0",
-      "status": "draft"
+      "status": "draft complete"
     }
   ],
   "confidence_criteria": [
