@@ -212,6 +212,7 @@ Minimality proof sketch: normal forms in \(C_3 * C_2 * C_\infty\) are unique; an
 ### Conservation and uniqueness
 - The kernel preserves global conservation (modified Poisson in divergence form) and reduces to the standard Poisson when \(\chi\to0\).
 - Among monotone, self‑similar saturating laws, the reciprocal form \(1/(1+\chi)\) uniquely extremizes the ledger action under a convex capacity constraint, making it the minimal‑cost choice.
+- Implementation note: the demo codes share a single ILG implementation in `scripts/ilg_common.py` so that growth and lensing use identical \(\mu(a,k)\), \(a_\text{char}\), and gating‑derived \(\beta\).
 
 ### ILG kernel uniqueness — variational lemma (tight)
 - Define the ledger action over a spherical shell of radius \(r\) for a trial kernel \(w\in(0,1]\):
@@ -227,6 +228,8 @@ Corollary (explicit Newtonian/MOND limits).
 ### Acceptance checks
 - Reproduce Newtonian behavior at small \(r\) and the empirical \(a_0\sim1.2\times10^{-10}\,\mathrm{m\,s^{-2}}\) from the capacity formula with the fixed \(\lambda_{\rm rec}, T_{\rm breath}, N_{\rm gates}\).
 - Use the same \(w(r)\) in structure‑growth and lensing predictions with no reweighting.
+- Grids include redshift: publish \(z=1/a-1\) alongside \(a\); CI asserts presence in both growth and lensing grids.
+- Numeric limits: `docs/ilg_limit_checks.json` records Newtonian (\(\mu\to1\)) and deep‑regime sweeps; CI asserts the checks run and serialize successfully.
 
 ### Suppression factor \(\mathcal S\) (explicit combinatorics)
 - Breath ticks: \(t\in\{0,\dots,1023\}\).
