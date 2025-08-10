@@ -55,8 +55,15 @@ if __name__ == '__main__':
     status['gates'] = run_gates_check()
     # Growth JSON
     status['growth_json'] = check_json(DOCS / 'demo_results.json', ['growth'])
-    # Lensing JSON
-    status['lensing_json'] = check_json(DOCS / 'lensing_results.json', ['lensing'])
+# Lensing JSON
+status['lensing_json'] = check_json(DOCS / 'lensing_results.json', ['lensing'])
+# Masses snapshot JSON
+try:
+    # Generate fresh snapshot each run
+    subprocess.run([sys.executable, str(SCRIPTS / 'masses_snapshot_json.py')], check=True)
+    status['masses_json'] = check_json(DOCS / 'masses_snapshot.json', ['charged_leptons', 'quarks', 'bosons', 'ckm', 'pmns', 'neutrinos'])
+except Exception as e:
+    status['masses_json'] = {'passed': False, 'error': str(e)}
     # Conservation 2D constant-w
     status['cons_2d_const'] = run_conservation('conservation_check.py', 'conservation_check.json')
     # Conservation 2D varying-w
